@@ -15,6 +15,9 @@ func main() {
     if err != nil {
         log.Println("No .env file found")
     }
+    
+    // Initialize Google OAuth
+    config.InitGoogleOAuth()
 
     // Initialize Fiber
     app := fiber.New()

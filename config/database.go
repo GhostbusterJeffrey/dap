@@ -27,7 +27,7 @@ func ConnectDB() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	err = client.Connect(ctx)
+	_, err = mongo.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
