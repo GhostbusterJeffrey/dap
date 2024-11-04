@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/GhostbusterJeffrey/Dap/config"
-	"github.com/GhostbusterJeffrey/Dap/models"
-	"github.com/GhostbusterJeffrey/Dap/utils"
+	"github.com/GhostbusterJeffrey/dap/config"
+	"github.com/GhostbusterJeffrey/dap/models"
+	"github.com/GhostbusterJeffrey/dap/utils"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

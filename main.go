@@ -1,33 +1,33 @@
 package main
 
 import (
-    "log"
+	"log"
 
-    "github.com/gofiber/fiber/v2"
-    "github.com/GhostbusterJeffrey/Dap/config"
-    "github.com/GhostbusterJeffrey/Dap/routes"
-    "github.com/joho/godotenv"
+	"github.com/GhostbusterJeffrey/dap/config"
+	"github.com/GhostbusterJeffrey/dap/routes"
+	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-    // Load environment variables from .env file
-    err := godotenv.Load()
-    if err != nil {
-        log.Println("No .env file found")
-    }
-    
-    // Initialize Google OAuth
-    config.InitGoogleOAuth()
+	// Load environment variables from .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("No .env file found")
+	}
 
-    // Initialize Fiber
-    app := fiber.New()
+	// Initialize Google OAuth
+	config.InitGoogleOAuth()
 
-    // Connect to MongoDB
-    config.ConnectDB()
+	// Initialize Fiber
+	app := fiber.New()
 
-    // Set up routes
-    routes.Setup(app)
+	// Connect to MongoDB
+	config.ConnectDB()
 
-    // Start the server
-    log.Fatal(app.Listen(":8080"))
+	// Set up routes
+	routes.Setup(app)
+
+	// Start the server
+	log.Fatal(app.Listen(":8080"))
 }

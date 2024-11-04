@@ -1,12 +1,12 @@
 package routes
 
 import (
-    "github.com/gofiber/fiber/v2"
-    "github.com/GhostbusterJeffrey/Dap/handlers"
-    "github.com/GhostbusterJeffrey/Dap/middleware"
+	"github.com/GhostbusterJeffrey/dap/handlers"
+	"github.com/GhostbusterJeffrey/dap/middleware"
+	"github.com/gofiber/fiber/v2"
 )
 
 func SetupUserRoutes(app *fiber.App) {
-    userGroup := app.Group("/user", middleware.JWTMiddleware)
-    userGroup.Get("/name", handlers.GetUserName)
+	userGroup := app.Group("/user", middleware.JWTMiddleware)
+	userGroup.Get("/name", handlers.GetUserName)
 }

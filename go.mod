@@ -1,4 +1,4 @@
-module github.com/GhostbusterJeffrey/Dap
+module github.com/GhostbusterJeffrey/dap
 
 go 1.22.3
 
