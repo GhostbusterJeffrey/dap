@@ -19,7 +19,7 @@ func ConnectDB() {
 		log.Fatal("MONGODB_URI environment variable is not set")
 	}
 
-	client, err := mongo.NewClient(options.Client().ApplyURI(mongoURI))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongoURI))
 	if err != nil {
 		log.Fatal(err)
 	}
