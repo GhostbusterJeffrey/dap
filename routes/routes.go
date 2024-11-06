@@ -10,4 +10,5 @@ func Setup(app *fiber.App) {
 	SetupOAuthRoutes(app)
 	SetupUserRoutes(app)
 	SetupProjectRoutes(app)
+	SetupDynamicRoutes(app)
 }

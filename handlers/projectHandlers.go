@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"log"
 	"strings"
 	"time"
 
@@ -144,4 +145,31 @@ func GetProjectInfo(c *fiber.Ctx) error {
     }
 
     return c.JSON(project)
+}
+
+// HandleAPIRoute is a generic handler for all API routes
+func HandleAPIRoute(c *fiber.Ctx) error {
+    projectID := c.Params("projectID")
+    path := c.Params("*") // Use * to get the wildcard path
+
+    // Set up a context with a timeout
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    // Fetch the route from the database
+    collection := config.GetCollection("api_routes")
+    var route models.APIRoute
+    filter := bson.M{"projectid": projectID, "path": path}
+    err := collection.FindOne(ctx, filter).Decode(&route)
+    if err != nil {
+        log.Println("Error fetching API route:", err)
+        return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "API route not found"})
+    }
+
+    if c.Method() != route.Method {
+        return c.Status(fiber.StatusMethodNotAllowed).SendString("Method Not Allowed")
+    }
+
+    // Return the response based on the route's configuration
+    return c.SendString(route.Response)
 }
