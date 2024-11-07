@@ -24,8 +24,8 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowOrigins: "https://dap.uranium.work",
+		AllowCredentials: true,
 	}))
 
 	// Connect to MongoDB
