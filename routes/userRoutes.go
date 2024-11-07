@@ -9,4 +9,5 @@ import (
 func SetupUserRoutes(app *fiber.App) {
 	userGroup := app.Group("/user", middleware.JWTMiddleware)
 	userGroup.Get("/name", handlers.GetUserName)
+	userGroup.Get("/data", handlers.GetUserData)
 }
