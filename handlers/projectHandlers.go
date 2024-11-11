@@ -126,6 +126,38 @@ func CreateAPIRoute(c *fiber.Ctx) error {
     return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "API route created successfully"})
 }
 
+// Get all API routes for a project
+func GetAPIRoutes(c *fiber.Ctx) error {
+    projectID := c.Params("projectID")
+    collection := config.GetCollection("api_routes")
+
+    var routes []models.APIRoute
+    filter := bson.M{"projectid": projectID}
+    cursor, err := collection.Find(c.Context(), filter)
+    if err != nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to fetch routes"})
+    }
+
+    if err := cursor.All(c.Context(), &routes); err != nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to parse routes"})
+    }
+
+    return c.JSON(routes)
+}
+
+// Delete an API route
+func DeleteAPIRoute(c *fiber.Ctx) error {
+    routeID := c.Params("path")
+    collection := config.GetCollection("api_routes")
+
+    _, err := collection.DeleteOne(c.Context(), bson.M{"path": routeID})
+    if err != nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to delete route"})
+    }
+
+    return c.JSON(fiber.Map{"message": "Route deleted successfully"})
+}
+
 func GetProjectInfo(c *fiber.Ctx) error {
     // Extract the project ID from the URL parameters
     projectID := c.Params("id")
@@ -172,4 +204,52 @@ func HandleAPIRoute(c *fiber.Ctx) error {
 
     // Return the response based on the route's configuration
     return c.SendString(route.Response)
+}
+
+// Update an existing project
+func UpdateProject(c *fiber.Ctx) error {
+	projectID := c.Params("projectID")
+
+    // Convert the projectID to a MongoDB ObjectID
+    objectID, err := primitive.ObjectIDFromHex(projectID)
+    if err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid project ID format"})
+    }
+
+	collection := config.GetCollection("projects")
+
+	var updatedProject models.Project
+	if err := c.BodyParser(&updatedProject); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
+	}
+
+	filter := bson.M{"_id": objectID}
+	update := bson.M{"$set": bson.M{"name": updatedProject.Name, "description": updatedProject.Description}}
+
+	_, err = collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update project"})
+	}
+
+	return c.JSON(fiber.Map{"message": "Project updated successfully"})
+}
+
+// Delete a project
+func DeleteProject(c *fiber.Ctx) error {
+	projectID := c.Params("projectID")
+
+    // Convert the projectID to a MongoDB ObjectID
+    objectID, err := primitive.ObjectIDFromHex(projectID)
+    if err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid project ID format"})
+    }
+
+	collection := config.GetCollection("projects")
+
+	_, err = collection.DeleteOne(context.TODO(), bson.M{"_id": objectID})
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to delete project"})
+	}
+
+	return c.JSON(fiber.Map{"message": "Project deleted successfully"})
 }
